@@ -47,21 +47,17 @@ void OneHotCuda<TI, T>::forward_impl(const Variables &inputs,
   cuda_set_device(this->device_);
   const TIcu *x = inputs[0]->get_data_pointer<TIcu>(this->ctx_);
   Tcu *y = outputs[0]->cast_data_and_get_pointer<Tcu>(this->ctx_, true);
-
-  int *shape_cpu = new int[this->shape_.size()];
-  for (int i = 0; i < this->shape_.size(); ++i) {
-    shape_cpu[i] = this->shape_[i];
-  }
+  const int *shape_cpu = this->shape_.data();
 
   CudaCachedArray cushape(sizeof(int) * this->shape_.size(), dtypes::BYTE,
                           this->ctx_);
   void *cushape_ptr = cushape.pointer<void>();
+
   NBLA_CUDA_CHECK(cudaMemcpy((int *)cushape_ptr, shape_cpu,
                              sizeof(int) * this->shape_.size(),
                              cudaMemcpyHostToDevice));
+
   NBLA_CUDA_LAUNCH_KERNEL_SIMPLE(kernel_one_hot, this->num_, this->size_, x, y,
                                  (int *)cushape_ptr, this->dim_);
-
-  delete[] shape_cpu;
 }
 }
