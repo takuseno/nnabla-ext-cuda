@@ -61,6 +61,7 @@ void OneHotCuda<TI, T>::forward_impl(const Variables &inputs,
                              cudaMemcpyHostToDevice));
   NBLA_CUDA_LAUNCH_KERNEL_SIMPLE(kernel_one_hot, this->num_, this->size_, x, y,
                                  (int *)cushape_ptr, this->dim_);
-  delete shape_cpu;
+
+  delete[] shape_cpu;
 }
 }
