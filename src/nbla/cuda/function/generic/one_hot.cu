@@ -21,8 +21,8 @@
 namespace nbla {
 
 template <typename TI, typename T>
-__global__ void kernel_one_hot(const int num, int size, const TI *x, T *y,
-                               int *shape, const int dim) {
+__global__ void kernel_one_hot(const int num, const int size, const TI *x, T *y,
+                               const int *shape, const int dim) {
   NBLA_CUDA_KERNEL_LOOP(idx, num) {
     int addr = 0;
     Size_t s = 1;
